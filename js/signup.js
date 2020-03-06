@@ -1,31 +1,29 @@
-const db = require('./data.json');
-const fs = require('fs');
-
-const UserModel = db.Users
-//console.log(UserModel);
-
+const UserModel = Users.User
+let response;
 const signup = (userinfo) => {
     const userName = userinfo.userName;
     const email = userinfo.email;
     const password = userinfo.password;
 
     if(!userName || !email || !password){
-        return {
+        response = {
             error: 'Empty Username or email or password'
         }
+        console.log(response);
     }else{
         if( userName.length < 6 || email.length < 6) {
             //console.log('less then 6')
-            return {
+            response = {
                 error: 'Username and Email must be more than 6'
             }
+            console.log(response);
         } else {
            const findUser = UserModel.find( user => user.email === email);
             if(findUser){
-                return {
+                response = {
                     error: 'User exist try another email'
                 }
-                //console.log('existed')
+                console.log(response);
             }else{
                 const pattern = /^[^a-zA-Z]+@[a-zA-Z0-9]/;
                 if(pattern.test(email)){
@@ -34,19 +32,10 @@ const signup = (userinfo) => {
                         error: 'Wrong email format'
                     }
                 }
-                const p = 'data.json';
-                fs.readFile(p, (err, fileContent) => {
-                    let users = { "Users": [] }
-                    if(!err){
-                        users = JSON.parse(fileContent);
-                        //console.log(UserModel)
-                    }
-                    const update = users.Users[{...UserModel}, {...userinfo}]
-                    users.Users = [{...userinfo}, {...UserModel}];
-                    fs.writeFile(p, JSON.stringify(users), err => {
-                        console.log(err);
-                      })
-                })
+
+                const UpdateUser = UserModel.push(userinfo);
+                console.log(UserModel)
+                
             }
         }
     }
@@ -54,7 +43,8 @@ const signup = (userinfo) => {
 
 
 signup({
-    email: 'kunle$@gmail.com',
+    id: UserModel.length + 1,
+    email: 'tea@example.com',
     userName: 'kkekekkkf',
     password: 'sddddddd'
 });
